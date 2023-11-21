@@ -1,0 +1,39 @@
+extensions:
+	console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
+
+	nettrine.annotations: Nettrine\Annotations\DI\AnnotationsExtension
+	nettrine.cache: Nettrine\Cache\DI\CacheExtension
+
+	nettrine.dbal: Nettrine\DBAL\DI\DbalExtension
+	nettrine.dbal.console: Nettrine\DBAL\DI\DbalConsoleExtension
+
+	nettrine.orm: Nettrine\ORM\DI\OrmExtension
+	nettrine.orm.cache: Nettrine\ORM\DI\OrmCacheExtension
+	nettrine.orm.console: Nettrine\ORM\DI\OrmConsoleExtension(%consoleMode%)
+	nettrine.orm.attributes: Nettrine\ORM\DI\OrmAttributesExtension
+
+	nettrine.fixtures: Nettrine\Fixtures\DI\FixturesExtension
+	nettrine.migrations: Nettrine\Migrations\DI\MigrationsExtension
+
+nettrine.dbal:
+  debug:
+    panel: %debugMode%
+  connection:
+    host: %db.host%
+    driver: %db.driver%
+    port: %db.port%
+    dbname: %db.dbname%
+    user: %db.user%
+    password: %db.pass%
+
+nettrine.migrations:
+	directory: %appDir%/../db/Migrations
+	namespace: Database\Migrations
+	table: doctrine_migrations
+
+nettrine.orm:
+	entityManagerDecoratorClass: App\Base\Database\EntityManagerDecorator
+
+nettrine.orm.attributes:
+    mapping:
+        App\Models: %appDir%/Models

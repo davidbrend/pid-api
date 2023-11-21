@@ -1,0 +1,57 @@
+{
+	"name": "bongyseek/pid-api",
+	"description": "PID API",
+	"keywords": ["nette"],
+	"type": "project",
+	"license": ["MIT"],
+	"require": {
+		"php": "^8.1",
+		"nette/application": "^3.1",
+		"nette/bootstrap": "^3.2",
+		"nette/di": "^3.1",
+		"nette/forms": "^3.1",
+		"nette/http": "^3.2",
+		"nette/robot-loader": "^v3.4.2",
+		"nette/security": "^3.1",
+		"nette/utils": "^v3.2.7",
+		"latte/latte": "^3.0",
+		"contributte/apitte": "v0.11.0",
+		"tracy/tracy": "^2.9",
+		"symfony/webpack-encore-bundle": "^2.1",
+		"nettrine/dbal": "^0.8.2",
+		"nettrine/cache": "^0.3.0",
+		"contributte/console": "^0.9.3",
+		"nettrine/annotations": "^0.7.0",
+		"nettrine/migrations": "^0.9.1",
+		"nettrine/fixtures": "^0.7.2",
+		"nettrine/orm": "^0.8.4",
+		"contributte/di": "^0.5.6",
+		"contributte/middlewares": "^0.11.1",
+		"symfony/validator": "^6.3",
+		"symfony/serializer": "^6.3"
+	},
+	"require-dev": {
+		"roave/security-advisories": "dev-latest",
+		"nette/tester": "^2.4",
+		"symfony/thanks": "^1",
+		"phpstan/phpstan": "^1.10"
+	},
+	"autoload": {
+		"psr-4": {
+			"App\\": "app"
+		}
+	},
+	"minimum-stability": "stable",
+	"config": {
+		"allow-plugins": {
+			"symfony/thanks": true,
+			"php-http/discovery": true
+		}
+	},
+	"scripts": {
+		"phpstan": "vendor/bin/phpstan analyse app --level 8",
+		"clear-entity": "./bin/console orm:clear-cache:metadata",
+		"create-migration": "./bin/console migrations:diff",
+		"run-migration": "./bin/console migrations:migrate"
+	}
+}

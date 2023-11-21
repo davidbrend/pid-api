@@ -1,0 +1,7 @@
+log/
+vendor
+node_modules
+.idea
+temp/
+www/dist
+data

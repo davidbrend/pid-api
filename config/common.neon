@@ -1,0 +1,42 @@
+parameters:
+    db:
+        driver: pdo_mysql
+        host: localhost
+        port: 3306
+        dbname: db
+        user: user
+        pass: pass
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\Presenters\*Presenter
+
+search:
+    factories:
+        in: %appDir%
+        files:
+            - *Factory.php
+    services:
+        in: %appDir%
+        files:
+            - *Service.php
+    facades:
+        in: %appDir%
+        files:
+            - *Facade.php
+
+session:
+	expiration: 14 days
+
+extensions:
+    console: Contributte\Console\DI\ConsoleExtension(%consoleMode%)
+
+di:
+	export:
+		parameters: no
+		tags: no
+
+includes:
+    - doctrine.neon
+    - api.neon

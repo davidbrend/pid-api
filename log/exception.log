@@ -1,0 +1,1 @@
+[2023-11-21 16-23-34] Nette\DI\InvalidConfigurationException: Unexpected item 'services › middleware.cors › m1'. in /var/www/html/vendor/nette/di/src/DI/Compiler.php:293  @  http://localhost:8080/  @@  exception--2023-11-21--16-23--5404ccf469.html
