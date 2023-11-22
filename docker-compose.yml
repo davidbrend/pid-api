@@ -22,7 +22,9 @@ services:
       - ./:/var/www/html/
 
   mysql:
-    image: mysql:latest
+    build:
+      context: .
+      dockerfile: docker/mysql/Dockerfile
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: toor
