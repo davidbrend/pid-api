@@ -28,7 +28,8 @@
 		"contributte/di": "^0.5.6",
 		"contributte/middlewares": "^0.11.1",
 		"symfony/validator": "^6.3",
-		"symfony/serializer": "^6.3"
+		"symfony/serializer": "^6.3",
+		"guzzlehttp/guzzle": "^7.8"
 	},
 	"require-dev": {
 		"roave/security-advisories": "dev-latest",
