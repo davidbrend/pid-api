@@ -45,7 +45,7 @@ class PointOfSale extends BaseEntity
         $this->payMethods = new ArrayCollection();
     }
 
-    public function getType(): PointType
+    public function getType(): ?PointType
     {
         return $this->type;
     }

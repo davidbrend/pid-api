@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Base\Database\BaseEntity;
+use App\Repositories\PointTypeRepository;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
 
-#[Entity(repositoryClass: PointType::class)]
+#[Entity(repositoryClass: PointTypeRepository::class)]
 #[Table(name: 'pointTypes')]
 class PointType extends BaseEntity
 {
