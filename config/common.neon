@@ -1,7 +1,7 @@
 parameters:
     db:
         driver: pdo_mysql
-        host: localhost
+        host: host.docker.internal
         port: 3306
         dbname: db
         user: user
