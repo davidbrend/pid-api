@@ -34,12 +34,9 @@ class PIDService
 
         $response = $client->request('GET');
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() <= 300) {
-            try {
-                return Json::decode($response->getBody(), Json::FORCE_ARRAY);
-            } catch (\Throwable $e) {
-                throw new \Exception($e->getMessage());
-            }
+            return $response;
         }
+
         throw new \Exception('Invalid Response');
     }
 

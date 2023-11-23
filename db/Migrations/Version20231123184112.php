@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20231122182322 extends AbstractMigration
+final class Version20231123184112 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,12 @@ final class Version20231122182322 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE openingHours (id INT AUTO_INCREMENT NOT NULL, point_of_sale_id VARCHAR(255) NOT NULL, `from` INT NOT NULL, `to` INT NOT NULL, hours LONGTEXT NOT NULL, UNIQUE INDEX UNIQ_F07B24B96B7E9A73 (point_of_sale_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE payMethods (id INT AUTO_INCREMENT NOT NULL, point_of_sale_id VARCHAR(255) DEFAULT NULL, val INT NOT NULL, `desc` LONGTEXT NOT NULL, INDEX IDX_E9F7E3396B7E9A73 (point_of_sale_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE pointTypes (id INT AUTO_INCREMENT NOT NULL, point_of_sale_id VARCHAR(255) DEFAULT NULL, name LONGTEXT NOT NULL, `desc` LONGTEXT NOT NULL, UNIQUE INDEX UNIQ_4C54314D6B7E9A73 (point_of_sale_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE pointsOfSale (id VARCHAR(255) NOT NULL, name LONGTEXT NOT NULL, address LONGTEXT NOT NULL, lat NUMERIC(10, 7) NOT NULL, lon NUMERIC(10, 7) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE serviceGroups (id INT AUTO_INCREMENT NOT NULL, point_of_sale_id VARCHAR(255) DEFAULT NULL, `desc` LONGTEXT NOT NULL, INDEX IDX_D48B3D3D6B7E9A73 (point_of_sale_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE services (id INT AUTO_INCREMENT NOT NULL, service_group_id INT NOT NULL, val INT NOT NULL, `desc` LONGTEXT NOT NULL, INDEX IDX_7332E169722827A (service_group_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE openingHours (id INT AUTO_INCREMENT NOT NULL, point_of_sale_id VARCHAR(255) DEFAULT NULL, `fromDay` INT NOT NULL, `toDay` INT NOT NULL, `dateRangeString` VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_F07B24B96B7E9A73 (point_of_sale_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE payMethods (id INT AUTO_INCREMENT NOT NULL, point_of_sale_id VARCHAR(255) DEFAULT NULL, val INT NOT NULL, `description` VARCHAR(255) NOT NULL, INDEX IDX_E9F7E3396B7E9A73 (point_of_sale_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE pointTypes (id INT AUTO_INCREMENT NOT NULL, point_of_sale_id VARCHAR(255) DEFAULT NULL, name VARCHAR(255) NOT NULL, `description` VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_4C54314D6B7E9A73 (point_of_sale_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE pointsOfSale (id VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, address VARCHAR(255) NOT NULL, lat NUMERIC(10, 7) NOT NULL, lon NUMERIC(10, 7) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE serviceGroups (id INT AUTO_INCREMENT NOT NULL, point_of_sale_id VARCHAR(255) DEFAULT NULL, `description` VARCHAR(255) NOT NULL, INDEX IDX_D48B3D3D6B7E9A73 (point_of_sale_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE services (id INT AUTO_INCREMENT NOT NULL, service_group_id INT DEFAULT NULL, val INT NOT NULL, `description` VARCHAR(255) NOT NULL, INDEX IDX_7332E169722827A (service_group_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE `utf8_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE openingHours ADD CONSTRAINT FK_F07B24B96B7E9A73 FOREIGN KEY (point_of_sale_id) REFERENCES pointsOfSale (id)');
         $this->addSql('ALTER TABLE payMethods ADD CONSTRAINT FK_E9F7E3396B7E9A73 FOREIGN KEY (point_of_sale_id) REFERENCES pointsOfSale (id)');
         $this->addSql('ALTER TABLE pointTypes ADD CONSTRAINT FK_4C54314D6B7E9A73 FOREIGN KEY (point_of_sale_id) REFERENCES pointsOfSale (id)');

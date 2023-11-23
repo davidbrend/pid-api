@@ -20,11 +20,11 @@ class PointType extends BaseEntity
     #[Id]
     #[GeneratedValue(strategy: 'IDENTITY')]
     protected int $id;
-    #[Column(type: 'text')]
+    #[Column(length: 255)]
     protected string $name;
-    #[Column(type: 'text')]
+    #[Column(name: "`description`", length: 255)]
     protected string $desc;
-    #[OneToOne(inversedBy: 'PointType', targetEntity: PointOfSale::class)]
+    #[OneToOne(inversedBy: 'pointType', targetEntity: PointOfSale::class)]
     #[JoinColumn(nullable: true)]
     protected ?PointOfSale $pointOfSale = null;
 

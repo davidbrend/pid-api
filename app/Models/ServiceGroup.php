@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
 
 #[Entity(repositoryClass: ServiceGroupRepository::class)]
@@ -23,11 +24,11 @@ class ServiceGroup extends BaseEntity
     #[Id]
     #[GeneratedValue(strategy: 'IDENTITY')]
     protected int $id;
-    #[Column(type:'text')]
+    #[Column(name: "`description`", length: 255)]
     protected string $desc;
     #[OneToMany(mappedBy: 'serviceGroup', targetEntity: Service::class)]
     protected Collection $services;
-    #[ManyToOne(targetEntity: PointOfSale::class, inversedBy: 'serviceGroups')]
+    #[ManyToOne(targetEntity: PointOfSale::class, cascade: ['persist'], inversedBy: 'serviceGroups')]
     #[JoinColumn(nullable: true)]
     protected ?PointOfSale $pointOfSale = null;
 
@@ -52,9 +53,13 @@ class ServiceGroup extends BaseEntity
         return $this->services;
     }
 
-    public function setServices(Collection $services): ServiceGroup
+    /**
+     * @param array<Service> $services
+     * @return $this
+     */
+    public function setServices(array $services): ServiceGroup
     {
-        $this->services = $services;
+        $this->services = new ArrayCollection($services);
         return $this;
     }
 
