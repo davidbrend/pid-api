@@ -16,7 +16,10 @@ class HomepagePresenter extends BasePresenter
 
     public function renderDefault(): void
     {
-
+        $date = new \DateTimeImmutable();
+        $t1 = (clone $date)->setTime(8,0);
+        // $t2 = (clone $date)->setTime(5,0);
+        $this->facade->getAllPointsOfSaleByCriteria(isOpen: true);
     }
 
     /**

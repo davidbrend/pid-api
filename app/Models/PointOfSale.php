@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
@@ -22,7 +24,8 @@ class PointOfSale extends BaseEntity
     #[Id]
     #[GeneratedValue(strategy: 'NONE')]
     protected string $id;
-    #[OneToOne(mappedBy: 'pointOfSale', targetEntity: PointType::class)]
+    #[ManyToOne(targetEntity: PointType::class, cascade: ['persist'], inversedBy: 'services')]
+    #[JoinColumn(nullable: true)]
     protected ?PointType $type = null;
     #[Column(length: 255)]
     protected string $name;

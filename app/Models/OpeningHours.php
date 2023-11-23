@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
 
@@ -26,7 +28,7 @@ class OpeningHours extends BaseEntity
     protected int $to;
     #[Column(name: "`dateRangeString`", length: 255)]
     protected string $hours;
-    #[OneToOne(inversedBy: 'PointType', targetEntity: PointOfSale::class)]
+    #[ManyToOne(targetEntity: PointOfSale::class, cascade: ['persist'], inversedBy: 'openingHours')]
     #[JoinColumn(nullable: true)]
     protected ?PointOfSale $pointOfSale = null;
 
