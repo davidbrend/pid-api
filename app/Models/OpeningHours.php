@@ -20,15 +20,15 @@ class OpeningHours extends BaseEntity
     #[Id]
     #[GeneratedValue(strategy: 'IDENTITY')]
     protected int $id;
-    #[Column]
+    #[Column(name: "`fromDay`")]
     protected int $from;
-    #[Column]
+    #[Column(name: "`toDay`")]
     protected int $to;
-    #[Column(type:'text')]
+    #[Column(name: "`dateRangeString`", length: 255)]
     protected string $hours;
     #[OneToOne(inversedBy: 'PointType', targetEntity: PointOfSale::class)]
-    #[JoinColumn(nullable: false)]
-    protected PointOfSale $pointOfSale;
+    #[JoinColumn(nullable: true)]
+    protected ?PointOfSale $pointOfSale = null;
 
     public function getFrom(): int
     {
@@ -63,7 +63,7 @@ class OpeningHours extends BaseEntity
         return $this;
     }
 
-    public function getPointOfSale(): PointOfSale
+    public function getPointOfSale(): ?PointOfSale
     {
         return $this->pointOfSale;
     }

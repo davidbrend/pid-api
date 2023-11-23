@@ -22,10 +22,10 @@ class Service extends BaseEntity
     protected int $id;
     #[Column]
     protected int $val;
-    #[Column(type: 'text')]
+    #[Column(name: "`description`", length: 255)]
     protected string $desc;
-    #[ManyToOne(targetEntity: ServiceGroup::class, inversedBy: 'services')]
-    #[JoinColumn(nullable: false)]
+    #[ManyToOne(targetEntity: ServiceGroup::class, cascade: ['persist'], inversedBy: 'services')]
+    #[JoinColumn(nullable: true)]
     protected ServiceGroup $serviceGroup;
 
     public function getVal(): int
@@ -50,7 +50,7 @@ class Service extends BaseEntity
         return $this;
     }
 
-    public function getServiceGroup(): ServiceGroup
+    public function getServiceGroup(): ?ServiceGroup
     {
         return $this->serviceGroup;
     }

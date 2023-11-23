@@ -22,9 +22,9 @@ class PayMethod extends BaseEntity
     protected int $id;
     #[Column]
     protected int $val;
-    #[Column(type:'text')]
+    #[Column(name: "`description`", length: 255)]
     protected string $desc;
-    #[ManyToOne(targetEntity: PointOfSale::class, inversedBy: 'payMethods')]
+    #[ManyToOne(targetEntity: PointOfSale::class, cascade: ['persist'], inversedBy: 'payMethods')]
     #[JoinColumn(nullable: true)]
     protected ?PointOfSale $pointOfSale = null;
 
