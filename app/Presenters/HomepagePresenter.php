@@ -17,9 +17,6 @@ class HomepagePresenter extends BasePresenter
 
     public function renderDefault(): void
     {
-        $date = new \DateTimeImmutable();
-        $t1 = (clone $date)->setDate(2023, 11, 23)->setTime(23,00);
-        bdump($this->facade->getAllPointsOfSaleByCriteria(date: $t1));
     }
 
     /**

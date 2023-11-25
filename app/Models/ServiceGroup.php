@@ -18,8 +18,8 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
 
-// #[Entity(repositoryClass: ServiceGroupRepository::class)]
-// #[Table(name: 'serviceGroups')]
+#[Entity(repositoryClass: ServiceGroupRepository::class)]
+#[Table(name: 'serviceGroups')]
 class ServiceGroup extends BaseEntity
 {
     #[Column]
@@ -28,7 +28,7 @@ class ServiceGroup extends BaseEntity
     protected int $id;
     #[Column(name: "`description`", length: 255)]
     protected string $desc;
-    #[OneToMany(mappedBy: 'serviceGroup', targetEntity: Service::class)]
+    #[ManyToMany(targetEntity: Service::class, inversedBy: 'serviceGroups', cascade: ['persist'])]
     protected Collection $services;
     #[ManyToMany(targetEntity: PointOfSale::class, mappedBy: 'serviceGroups', cascade: ['persist'])]
     #[JoinTable(name: 'point_of_sale_service_groups')]

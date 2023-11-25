@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
-//#[Entity(repositoryClass: PayMethodRepository::class)]
+#[Entity(repositoryClass: PayMethodRepository::class)]
 #[Table(name: 'payMethods')]
 class PayMethod extends BaseEntity
 {

@@ -3,18 +3,23 @@
 namespace App\Api\V1\PointsOfSale\Models\Request;
 
 use Apitte\Core\Mapping\Request\BasicEntity;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use App\Api\V1\PointsOfSale\Models\Response\OpeningHoursResponse;
+use App\Api\V1\PointsOfSale\Models\Response\PayMethodResponse;
+use App\Api\V1\PointsOfSale\Models\Response\PointTypeResponse;
+use App\Api\V1\PointsOfSale\Models\Response\ServiceGroupResponse;
 
 final class PointOfSaleRequest extends BasicEntity
 {
-    #[NotBlank]
     public string $id;
-    #[NotBlank]
     public string $name;
-    // #[NotBlank]
-    // public array $openingHours; // I do not know how to include into swagger as Request entity body example
-    #[NotBlank]
+    public PointTypeResponse $pointType;
+    /** @var OpeningHoursResponse[] $openingHours */
+    public array $openingHours = [];
     public float $lat;
-    #[NotBlank]
     public float $lon;
+    /** @var PayMethodResponse[] $payMethods */
+    public array $payMethods = [];
+
+    /** @var ServiceGroupResponse[] $serviceGroups */
+    public array $serviceGroups = [];
 }
