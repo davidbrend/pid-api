@@ -25,7 +25,15 @@ class HomepagePresenter extends BasePresenter
      */
     public function handleUpdatePointsOfSale(): void
     {
-        $this->facade->synchronizePointsOfSaleFromPID();
-        $this->redirect('this');
+        try {
+            $this->facade->synchronizePointsOfSaleFromPID();
+            $this->redirect('this');
+        } catch (\Throwable $ex) {
+            $this->template->error = $ex->getMessage();
+        }
+
+        if ($this->isAjax()) {
+            $this->redrawControl('main');
+        }
     }
 }
