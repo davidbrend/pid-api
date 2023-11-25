@@ -19,17 +19,14 @@ class HomepagePresenter extends BasePresenter
     {
     }
 
-    /**
-     * @throws GuzzleException
-     * @throws AbortException
-     */
     public function handleUpdatePointsOfSale(): void
     {
         try {
             $this->facade->synchronizePointsOfSaleFromPID();
             $this->redirect('this');
         } catch (\Throwable $ex) {
-            $this->template->error = $ex->getMessage();
+            /** @phpstan-ignore-next-line */
+            $this->template->errorMessage = $ex->getMessage();
         }
 
         if ($this->isAjax()) {

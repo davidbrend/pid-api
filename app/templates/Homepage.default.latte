@@ -1,9 +1,9 @@
 {block content}
-{varType string $error}
+{varType string $errorMessage}
 
 {snippet main}
-    {ifset $error}
-        <span style="color: red;">{$error}</span>
+    {ifset $errorMessage}
+        <span style="color: red;">{$errorMessage}</span>
     {else}
         <a n:href="updatePointsOfSale!" class="ajax">Synchronize Points of sale</a>
     {/ifset}

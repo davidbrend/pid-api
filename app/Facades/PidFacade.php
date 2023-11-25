@@ -291,7 +291,7 @@ class PidFacade
 
                             if (($time >= $startTimeStr && $endTimeStr >= $time) &&
                                 $oh->getFrom() <= $dayOfWeek && $oh->getTo() >= $dayOfWeek) {
-                                $result[] = PointOfSaleResponse::from($pos);
+                                $result[$pos->getId()] ??= PointOfSaleResponse::from($pos);
                             }
                         }
 
