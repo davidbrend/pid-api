@@ -26,9 +26,9 @@ class PointOfSale extends BaseEntity
     #[Id]
     #[GeneratedValue(strategy: 'NONE')]
     protected string $id;
-    // #[ManyToOne(targetEntity: PointType::class, cascade: ['persist'], inversedBy: 'services')]
-    // #[JoinColumn(nullable: true)]
-    // protected ?PointType $type = null;
+    #[ManyToOne(targetEntity: PointType::class, cascade: ['persist'], inversedBy: 'pointsOfSale')]
+    #[JoinColumn(nullable: true)]
+    protected ?PointType $type = null;
     #[Column(length: 255)]
     protected string $name;
     #[Column(length: 255)]
@@ -37,18 +37,18 @@ class PointOfSale extends BaseEntity
     protected float $lat;
     #[Column(type: 'decimal', precision: 10, scale: 7)]
     protected float $lon;
-    // #[ManyToMany(targetEntity: ServiceGroup::class, inversedBy: 'pointsOfSale', cascade: ['persist'])]
-    // protected Collection $services;
-    // #[ManyToMany(targetEntity: PayMethod::class, inversedBy: 'pointsOfSale', cascade: ['persist'])]
-    // protected Collection $payMethods;
+    #[ManyToMany(targetEntity: ServiceGroup::class, inversedBy: 'pointsOfSale', cascade: ['persist'])]
+    protected Collection $serviceGroups;
+    #[ManyToMany(targetEntity: PayMethod::class, inversedBy: 'pointsOfSale', cascade: ['persist'])]
+    protected Collection $payMethods;
     #[ManyToMany(targetEntity: OpeningHours::class, inversedBy: 'pointsOfSale', cascade: ['persist'])]
     protected Collection $openingHours;
 
     public function __construct()
     {
-        // $this->services = new ArrayCollection();
+        $this->serviceGroups = new ArrayCollection();
         $this->openingHours = new ArrayCollection();
-        // $this->payMethods = new ArrayCollection();
+        $this->payMethods = new ArrayCollection();
     }
 
     public function getId(): string
@@ -62,7 +62,6 @@ class PointOfSale extends BaseEntity
         return $this;
     }
 
-    /*
     public function getType(): ?PointType
     {
         return $this->type;
@@ -72,7 +71,7 @@ class PointOfSale extends BaseEntity
     {
         $this->type = $type;
         return $this;
-    }*/
+    }
 
     public function getName(): string
     {
@@ -130,6 +129,36 @@ class PointOfSale extends BaseEntity
     public function setLon(float $lon): PointOfSale
     {
         $this->lon = $lon;
+        return $this;
+    }
+
+    public function getServiceGroups(): Collection
+    {
+        return $this->serviceGroups;
+    }
+
+    /**
+     * @param array<ServiceGroup> $serviceGroups
+     * @return $this
+     */
+    public function setServiceGroups(array $serviceGroups): PointOfSale
+    {
+        $this->serviceGroups = new ArrayCollection($serviceGroups);
+        return $this;
+    }
+
+    public function getPayMethods(): Collection
+    {
+        return $this->payMethods;
+    }
+
+    /**
+     * @param array<PayMethod> $payMethods
+     * @return $this
+     */
+    public function setPayMethods(array $payMethods): PointOfSale
+    {
+        $this->payMethods = new ArrayCollection($payMethods);
         return $this;
     }
 }
