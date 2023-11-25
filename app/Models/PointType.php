@@ -13,8 +13,8 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
 
-#[Entity(repositoryClass: PointTypeRepository::class)]
-#[Table(name: 'pointTypes')]
+// #[Entity(repositoryClass: PointTypeRepository::class)]
+// #[Table(name: 'pointTypes')]
 class PointType extends BaseEntity
 {
     #[Column]

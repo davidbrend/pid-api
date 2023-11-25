@@ -12,8 +12,8 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
-#[Entity(repositoryClass: ServiceRepository::class)]
-#[Table(name: 'services')]
+// #[Entity(repositoryClass: ServiceRepository::class)]
+// #[Table(name: 'services')]
 class Service extends BaseEntity
 {
     #[Column]

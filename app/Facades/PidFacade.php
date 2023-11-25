@@ -2,6 +2,8 @@
 
 namespace App\Facades;
 
+use _PHPStan_93af41bf5\Nette\Utils\DateTime;
+use App\Api\V1\PointsOfSale\Models\Response\PointOfSaleResponse;
 use App\Base\Database\EntityManagerDecorator;
 use App\Models\OpeningHours;
 use App\Models\PayMethod;
@@ -26,9 +28,9 @@ class PidFacade
     public function synchronizePointsOfSaleFromPID(): void
     {
         $pointsOfSaleJson = $this->service->getPointsOfSaleJson();
-        $constsJson = $this->service->getConstsJson()['pointsOfSaleConsts'] ?? [];
+        // $constsJson = $this->service->getConstsJson()['pointsOfSaleConsts'] ?? [];
 
-        if (count($pointsOfSaleJson) === 0 || count($constsJson) === 0) {
+        if (count($pointsOfSaleJson) === 0 /*|| count($constsJson) === 0*/) {
             throw new \Exception('Invalid data to parse');
         }
 
@@ -36,10 +38,10 @@ class PidFacade
             $entity = $this->em->getRepository(PointOfSale::class)->findOneBy(['id' => $data['id']]);
             if ($entity === null) {
                 $entity = new PointOfSale();
-                $this->createPointOfSale($entity, $data, $constsJson);
+                $this->createPointOfSale($entity, $data);
                 $this->em->persist($entity);
             } else {
-                $this->createPointOfSale($entity, $data, $constsJson);
+                $this->createPointOfSale($entity, $data);
             }
 
             $this->em->flush();
@@ -47,68 +49,26 @@ class PidFacade
     }
 
     /**
-     * @return array<PointOfSale>
-     */
-    public function getAllPointsOfSaleByCriteria(?\DateTimeInterface $from = null, ?\DateTimeInterface $to = null, bool $isOpen = false, int $offset = 0, int $limit = 1000): array
-    {
-        $queryBuilder = $this->em->getRepository(PointOfSale::class)->createQueryBuilder('pos');
-        $queryBuilder->select('pos')
-            ->leftJoin('pos.openingHours', 'oh');
-
-        if ($from !== null) {
-            $queryBuilder->andWhere('oh.from <= :fromDay')
-                ->setParameter('fromDay', $from->format('w'));
-        }
-
-        if ($to !== null) {
-            $queryBuilder->andWhere('oh.to >= :toDay')
-                ->setParameter('toDay', $to->format('w'));
-        }
-
-        if ($isOpen) {
-            $currentDayOfWeek = (new \DateTime())->format('w');
-            $queryBuilder->andWhere(':currentDayOfWeek BETWEEN oh.from AND oh.to')
-                ->setParameter('currentDayOfWeek', $currentDayOfWeek);
-        }
-
-        $openPointsOfSaleArr = [];
-        try {
-            /** @var array<PointOfSale> $openPointsOfSale */
-            $openPointsOfSale = $queryBuilder->getQuery()->getResult();
-            foreach ($openPointsOfSale as $op) {
-                /** @var OpeningHours $oh */
-                foreach ($op->getOpeningHours()->getValues() as $oh) {
-                    /*$times = explode(',', $oh->getHours());
-                    foreach ($times as $timeRange) {
-                        [$startTime, $endTime] = explode('-', $timeRange);
-                        bdump($startTime);
-                    }*/
-                }
-                $openPointsOfSaleArr[] = $op;
-            }
-        } catch (\Throwable $exception) {
-            // Handle exceptions or return an empty array when no results found
-        }
-
-        return $openPointsOfSaleArr;
-    }
-
-    /**
      * @param PointOfSale $pointOfSale
      * @param array<mixed> $pointsOfSaleJson
-     * @param array<mixed> $constsJson
      * @return void
      * @throws \Exception
      */
-    private function createPointOfSale(PointOfSale $pointOfSale, array $pointsOfSaleJson, array $constsJson): void
+    private function createPointOfSale(PointOfSale $pointOfSale, array $pointsOfSaleJson): void
     {
         $properties = ['id', 'name', 'address', 'lat', 'lon'];
         foreach ($properties as $property) {
             if (isset($pointsOfSaleJson[$property])) {
-                $pointOfSale->{'set'.ucfirst($property)}($pointsOfSaleJson[$property]);
+                $pointOfSale->{'set' . ucfirst($property)}($pointsOfSaleJson[$property]);
             }
         }
 
+        $openingHoursArr = $pointsOfSaleJson['openingHours'];
+        if (isset($openingHoursArr)) {
+            $pointOfSale->setOpeningHours($this->getOpeningHours($openingHoursArr, $pointOfSale));
+        }
+
+        /*
         [$pointTypes, $serviceGroups, $payMethodsArr] = $this->getParsedDataFromConstsJson($constsJson, $pointOfSale);
 
         $type = $pointsOfSaleJson['type'];
@@ -118,11 +78,6 @@ class PidFacade
                     $pointOfSale->setType($pointType);
                 }
             }
-        }
-
-        $openingHoursArr = $pointsOfSaleJson['openingHours'];
-        if (isset($openingHoursArr)) {
-            $pointOfSale->setOpeningHours($this->getOpeningHours($openingHoursArr, $pointOfSale));
         }
 
         $services = $pointsOfSaleJson['services'];
@@ -136,13 +91,14 @@ class PidFacade
             $filteredPayMethods = $this->getAllPayMethodsFromArrByDecimal($payMethods, $payMethodsArr);
             $pointOfSale->setPayMethods($filteredPayMethods);
         }
+         */
     }
 
     /**
      * @param array<mixed> $constsJson
      * @return array{PointType[], ServiceGroup[], PayMethod[]}
      */
-    private function getParsedDataFromConstsJson(array $constsJson, PointOfSale $pointOfSale): array
+    /*private function getParsedDataFromConstsJson(array $constsJson, PointOfSale $pointOfSale): array
     {
         $pointTypes = [];
         $serviceGroups = [];
@@ -163,23 +119,20 @@ class PidFacade
         }
 
         return [$pointTypes, $serviceGroups, $payMethods];
-    }
+    }*/
 
     /**
      * @param array<mixed> $payMethods
      * @return array<PayMethod>
      */
-    private function getPayMethodsFromPart(array $payMethods, PointOfSale $pointOfSale): array
+    /*private function getPayMethodsFromPart(array $payMethods, PointOfSale $pointOfSale): array
     {
         $res = [];
         foreach ($payMethods as $payMethod) {
-            $entity = $this->em->getRepository(PayMethod::class)->findOneBy(['val' => $payMethod['val']]);
-            if ($entity === null) {
-                $entity = new PayMethod();
-            }
+            $entity = new PayMethod();
 
             $entity->setArr($payMethod);
-            $entity->setPointOfSale($pointOfSale);
+            $entity->addPointOfSale($pointOfSale);
             $this->em->persist($entity);
 
             $res[] = $entity;
@@ -187,13 +140,13 @@ class PidFacade
 
         $this->em->flush();
         return $res;
-    }
+    }*/
 
     /**
      * @param array<mixed> $serviceGroups
      * @return array<ServiceGroup>
      */
-    private function getServiceGroupsFromPart(array $serviceGroups, PointOfSale $pointOfSale): array
+    /*private function getServiceGroupsFromPart(array $serviceGroups, PointOfSale $pointOfSale): array
     {
         $res = [];
         foreach ($serviceGroups as $serviceGroup) {
@@ -205,7 +158,7 @@ class PidFacade
             }
 
             $entity->setDesc($serviceGroup['desc']);
-            $entity->setPointOfSale($pointOfSale);
+            $entity->addPointOfSale($pointOfSale);
             $this->em->persist($entity);
 
             $entity->setServices($this->getServicesFromServiceGroupsPart($serviceGroup['services'], $entity));
@@ -214,13 +167,13 @@ class PidFacade
 
         $this->em->flush();
         return $res;
-    }
+    }*/
 
     /**
      * @param array<mixed> $pointTypes
      * @return array<PointType>
      */
-    private function getPointTypesFromPart(array $pointTypes, PointOfSale $pointOfSale): array
+    /*private function getPointTypesFromPart(array $pointTypes, PointOfSale $pointOfSale): array
     {
         $res = [];
         foreach ($pointTypes as $pointType) {
@@ -239,14 +192,14 @@ class PidFacade
 
         $this->em->flush();
         return $res;
-    }
+    }*/
 
     /**
      * @param array<mixed> $services
      * @param ServiceGroup $serviceGroup
      * @return array<Service>
      */
-    private function getServicesFromServiceGroupsPart(array $services, ServiceGroup $serviceGroup): array
+    /*private function getServicesFromServiceGroupsPart(array $services, ServiceGroup $serviceGroup): array
     {
         $res = [];
         foreach ($services as $service) {
@@ -265,7 +218,7 @@ class PidFacade
 
         $this->em->flush();
         return $res;
-    }
+    }*/
 
     /**
      * @param array<mixed> $openingHoursArr
@@ -275,15 +228,10 @@ class PidFacade
     {
         $res = [];
         foreach ($openingHoursArr as $openingHour) {
-            $entity = $this->em->getRepository(OpeningHours::class)
-                ->findOneBy(['hours' => $openingHour['hours']]);
-
-            if ($entity === null) {
-                $entity = new OpeningHours();
-            }
+            $entity = new OpeningHours();
 
             $entity->setArr($openingHour);
-            $entity->setPointOfSale($pointOfSale);
+            $entity->addPointOfSale($pointOfSale);
             $this->em->persist($entity);
             $res[] = $entity;
         }
@@ -297,7 +245,7 @@ class PidFacade
      * @param array<PayMethod> $payMethodsArr
      * @return array<PayMethod>
      */
-    private function getAllPayMethodsFromArrByDecimal(int $payMethodsDecimal, array $payMethodsArr): array
+    /*private function getAllPayMethodsFromArrByDecimal(int $payMethodsDecimal, array $payMethodsArr): array
     {
         $res = [];
         foreach ($payMethodsArr as $payMethod) {
@@ -306,14 +254,14 @@ class PidFacade
             }
         }
         return $res;
-    }
+    }*/
 
     /**
      * @param int $servicesDecimal
      * @param array<ServiceGroup> $serviceGroups
      * @return array<ServiceGroup>
      */
-    private function getAllServiceGroupsWithFilteredServicesFromArrByDecimal(int $servicesDecimal, mixed $serviceGroups): array
+    /*private function getAllServiceGroupsWithFilteredServicesFromArrByDecimal(int $servicesDecimal, mixed $serviceGroups): array
     {
         $res = [];
         foreach ($serviceGroups as $serviceGroup) {
@@ -332,5 +280,56 @@ class PidFacade
         }
 
         return $res;
+    }*/
+
+    /**
+     * @return array<PointOfSaleResponse>
+     */
+    public function getAllPointsOfSaleByCriteria(?\DateTimeInterface $date = null, bool $isOpen = false, int $offset = 1000, int $limit = 0): array
+    {
+        $queryBuilder = $this->em->getRepository(PointOfSale::class)->createQueryBuilder('pos')
+            ->leftJoin('pos.openingHours', 'oh')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
+
+        $isActualDate = false;
+        if ($date === null) {
+            $date = new DateTime();
+            $isActualDate = true;
+        }
+
+        $dayOfWeek = (int)$date->format('N') - 1;
+        if ($isOpen) {
+            $queryBuilder
+                ->andWhere('oh.from <= :dayOfWeek AND oh.to >= :dayOfWeek')
+                ->setParameter('dayOfWeek', $dayOfWeek);
+        }
+
+        $pointsOfSale = $queryBuilder->getQuery()->getResult();
+        $time = $date->format('H:i');
+
+        $result = [];
+        foreach ($pointsOfSale as $pos) {
+            if (!$isOpen && $isActualDate) {
+                $result[] = PointOfSaleResponse::from($pos);
+            } else {
+                foreach ($pos->getOpeningHours() as $oh) {
+                    $times = explode(',', $oh->getHours());
+                    foreach ($times as $timeRange) {
+                        $timeParts = preg_split("/[\-\–\—]/u", $timeRange);
+                        if ($timeParts !== false) {
+                            [$startTimeStr, $endTimeStr] = array_map('trim', $timeParts);
+
+                            if (($time >= $startTimeStr && $endTimeStr >= $time) &&
+                                $oh->getFrom() <= $dayOfWeek && $oh->getTo() >= $dayOfWeek) {
+                                $result[] = PointOfSaleResponse::from($pos);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return $result;
     }
 }

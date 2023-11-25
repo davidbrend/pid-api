@@ -25,21 +25,20 @@ class PointsOfSaleController extends BaseV1Controller
 
     #[Path('/find')]
     #[Method('GET')]
-    #[RequestParameter(name: "is open", type: "bool", in: "query", required: false, description: "Find open points")]
-    #[RequestParameter(name:"from", type:"datetime", in:"query", required:false, description:"DateTime from")]
-    #[RequestParameter(name:"to", type:"datetime", in:"query", required:false, description:"DateTime to")]
-    #[RequestParameter(name:"limit", type:"int", in:"query", required:false, description:"Data limit")]
-    #[RequestParameter(name:"offset", type:"int", in:"query", required:false, description:"Data offset")]
+    #[RequestParameter(name: "IsOpen", type: "bool", in: "query", required: false, description: "Find open points")]
+    #[RequestParameter(name:"date", type:"datetime", in:"query", required:false, description:"Filter by date and time (E.g. 2017-07-21T17:32:28Z)")]
+    #[RequestParameter(name:"limit", type:"int", in:"query", required:false, description:"Data limit (Default: 0)")]
+    #[RequestParameter(name:"offset", type:"int", in:"query", required:false, description:"Data offset (Default: 1000)")]
     #[Response(description: "Success", code: "200", entity: PointOfSaleResponse::class)]
     #[Response(description: "Not found", code: "404")]
     public function getAllProducts(ApiRequest $request, ApiResponse $response): ApiResponse
     {
-        $isOpen = $request->getParameter('is open', false);
-        $from = $request->getParameter('from');
-        $to = $request->getParameter('to');
-        $limit = $request->getParameter('limit');
-        $offset = $request->getParameter('offset');
+        $isOpen = $request->getParameter('IsOpen', false);
+        $date = $request->getParameter('date', new \DateTime());
+        $limit = $request->getParameter('offset', 1000);
+        $offset = $request->getParameter('limit', 0);
+
         return $response->withStatus(ApiResponse::S200_OK)
-            ->withEntity(ArrayEntity::from($this->facade->getAllPointsOfSaleByCriteria($from, $to, $isOpen, $offset, $limit)));
+            ->withEntity(ArrayEntity::from($this->facade->getAllPointsOfSaleByCriteria($date, $isOpen, $offset, $limit)));
     }
 }

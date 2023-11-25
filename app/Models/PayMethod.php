@@ -4,15 +4,19 @@ namespace App\Models;
 
 use App\Base\Database\BaseEntity;
 use App\Repositories\PayMethodRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
 
-#[Entity(repositoryClass: PayMethodRepository::class)]
+//#[Entity(repositoryClass: PayMethodRepository::class)]
 #[Table(name: 'payMethods')]
 class PayMethod extends BaseEntity
 {
@@ -24,9 +28,14 @@ class PayMethod extends BaseEntity
     protected int $val;
     #[Column(name: "`description`", length: 255)]
     protected string $desc;
-    #[ManyToOne(targetEntity: PointOfSale::class, cascade: ['persist'], inversedBy: 'payMethods')]
-    #[JoinColumn(nullable: true)]
-    protected ?PointOfSale $pointOfSale = null;
+    #[ManyToMany(targetEntity: PointOfSale::class, mappedBy: 'payMethods', cascade: ['persist'])]
+    #[JoinTable(name: 'point_of_sale_pay_methods')]
+    protected Collection $pointsOfSale;
+
+    public function __construct()
+    {
+        $this->pointsOfSale = new ArrayCollection();
+    }
 
     public function getVal(): int
     {
@@ -50,14 +59,20 @@ class PayMethod extends BaseEntity
         return $this;
     }
 
-    public function getPointOfSale(): ?PointOfSale
+    public function getPointsOfSale(): Collection
     {
-        return $this->pointOfSale;
+        return $this->pointsOfSale;
     }
 
-    public function setPointOfSale(?PointOfSale $pointOfSale): PayMethod
+    public function setPointsOfSale(Collection $pointsOfSale): PayMethod
     {
-        $this->pointOfSale = $pointOfSale;
+        $this->pointsOfSale = $pointsOfSale;
+        return $this;
+    }
+
+    public function addPointOfSale(PointOfSale $pointOfSale): self
+    {
+        $this->pointsOfSale->add($pointOfSale);
         return $this;
     }
 }

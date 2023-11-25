@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OneToOne;
@@ -24,9 +26,9 @@ class PointOfSale extends BaseEntity
     #[Id]
     #[GeneratedValue(strategy: 'NONE')]
     protected string $id;
-    #[ManyToOne(targetEntity: PointType::class, cascade: ['persist'], inversedBy: 'services')]
-    #[JoinColumn(nullable: true)]
-    protected ?PointType $type = null;
+    // #[ManyToOne(targetEntity: PointType::class, cascade: ['persist'], inversedBy: 'services')]
+    // #[JoinColumn(nullable: true)]
+    // protected ?PointType $type = null;
     #[Column(length: 255)]
     protected string $name;
     #[Column(length: 255)]
@@ -35,18 +37,18 @@ class PointOfSale extends BaseEntity
     protected float $lat;
     #[Column(type: 'decimal', precision: 10, scale: 7)]
     protected float $lon;
-    #[OneToMany(mappedBy: 'pointOfSale', targetEntity: ServiceGroup::class, cascade: ['persist'])]
-    protected Collection $services;
-    #[OneToMany(mappedBy: 'pointOfSale', targetEntity: PayMethod::class, cascade: ['persist'])]
-    protected Collection $payMethods;
-    #[OneToMany(mappedBy: 'pointOfSale', targetEntity: OpeningHours::class, cascade: ['persist'])]
+    // #[ManyToMany(targetEntity: ServiceGroup::class, inversedBy: 'pointsOfSale', cascade: ['persist'])]
+    // protected Collection $services;
+    // #[ManyToMany(targetEntity: PayMethod::class, inversedBy: 'pointsOfSale', cascade: ['persist'])]
+    // protected Collection $payMethods;
+    #[ManyToMany(targetEntity: OpeningHours::class, inversedBy: 'pointsOfSale', cascade: ['persist'])]
     protected Collection $openingHours;
 
     public function __construct()
     {
-        $this->services = new ArrayCollection();
+        // $this->services = new ArrayCollection();
         $this->openingHours = new ArrayCollection();
-        $this->payMethods = new ArrayCollection();
+        // $this->payMethods = new ArrayCollection();
     }
 
     public function getId(): string
@@ -60,6 +62,7 @@ class PointOfSale extends BaseEntity
         return $this;
     }
 
+    /*
     public function getType(): ?PointType
     {
         return $this->type;
@@ -69,7 +72,7 @@ class PointOfSale extends BaseEntity
     {
         $this->type = $type;
         return $this;
-    }
+    }*/
 
     public function getName(): string
     {
@@ -127,36 +130,6 @@ class PointOfSale extends BaseEntity
     public function setLon(float $lon): PointOfSale
     {
         $this->lon = $lon;
-        return $this;
-    }
-
-    public function getServices(): Collection
-    {
-        return $this->services;
-    }
-
-    /**
-     * @param array<ServiceGroup> $services
-     * @return $this
-     */
-    public function setServices(array $services): PointOfSale
-    {
-        $this->services = new ArrayCollection($services);
-        return $this;
-    }
-
-    public function getPayMethods(): Collection
-    {
-        return $this->payMethods;
-    }
-
-    /**
-     * @param array<PayMethod> $payMethods
-     * @return $this
-     */
-    public function setPayMethods(array $payMethods): PointOfSale
-    {
-        $this->payMethods = new ArrayCollection($payMethods);
         return $this;
     }
 }
