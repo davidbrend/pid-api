@@ -9,11 +9,12 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\Table;
 
-#[Entity(repositoryClass: PointTypeRepository::class)]
-#[Table(name: 'pointTypes')]
+// #[Entity(repositoryClass: PointTypeRepository::class)]
+// #[Table(name: 'pointTypes')]
 class PointType extends BaseEntity
 {
     #[Column]
@@ -24,7 +25,7 @@ class PointType extends BaseEntity
     protected string $name;
     #[Column(name: "`description`", length: 255)]
     protected string $desc;
-    #[OneToOne(inversedBy: 'pointType', targetEntity: PointOfSale::class)]
+    #[ManyToOne(targetEntity: PointOfSale::class, cascade: ['persist'], inversedBy: 'pointTypes')]
     #[JoinColumn(nullable: true)]
     protected ?PointOfSale $pointOfSale = null;
 
