@@ -17,7 +17,7 @@ This project is a REST API built with Apitte, Docker, PHP 8.1, and Nette 3.1.
 
 3. Install the NPM dependencies:
 
-   `npm install`
+   `npm install` && `npm run dev` or `npm run build`
 
 4. Build the composer dependencies by running:
 

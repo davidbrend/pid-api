@@ -1,3 +1,10 @@
 {block content}
+{varType string $error}
 
-<a n:href="updatePointsOfSale!">Synchronize Points of sale</a>
+{snippet main}
+    {ifset $error}
+        <span style="color: red;">{$error}</span>
+    {else}
+        <a n:href="updatePointsOfSale!" class="ajax">Synchronize Points of sale</a>
+    {/ifset}
+{/snippet}
