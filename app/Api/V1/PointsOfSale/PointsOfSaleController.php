@@ -32,9 +32,13 @@ class PointsOfSaleController extends BaseV1Controller
     public function getAllProducts(ApiRequest $request, ApiResponse $response): ApiResponse
     {
         $isOpen = $request->getParameter('IsOpen', false);
-        $date = $request->getParameter('date', new \DateTime());
+        $date = $request->getParameter('date');
 
-        return $response->withStatus(ApiResponse::S200_OK)
-            ->withEntity(ArrayEntity::from($this->facade->getAllPointsOfSaleByCriteria($date, $isOpen)));
+        try {
+            return $response->withStatus(ApiResponse::S200_OK)
+                ->withEntity(ArrayEntity::from($this->facade->getAllPointsOfSaleByCriteria($date, $isOpen)));
+        } catch (\Throwable $ex) {
+            return $response->withStatus(ApiResponse::S409_CONFLICT)->writeBody($ex->getMessage());
+        }
     }
 }
